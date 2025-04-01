@@ -10,7 +10,18 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
-		}
-	}
+			"@/*": [
+				"./src/*"
+			]
+		},
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx"
+	],
+	"exclude": [
+		"node_modules"
+	]
 }

@@ -120,7 +120,7 @@ function seedClients(db: Database, count: number): number[] {
 			const address = faker.location.streetAddress({ useFullAddress: true });
 
 			const info = insertClient.run(name, email, phone, address);
-			clientIds.push(Number(info.lastInsertId));
+			clientIds.push(Number(info.lastInsertRowid));
 		}
 	})();
 
@@ -135,7 +135,7 @@ function seedCoins(db: Database, count: number, clientCount: number): number[] {
 
 	const coinIds: number[] = [];
 	const insertCoin = db.prepare(`
-    INSERT INTO coins (client_id, bit1, bit2, bit3, value) 
+    INSERT INTO coins (client_id, bit1, bit2, bit3, value)
     VALUES (?, ?, ?, ?, ?)
   `);
 
@@ -180,7 +180,7 @@ function seedCoins(db: Database, count: number, clientCount: number): number[] {
 			usedValues.add(value);
 
 			const info = insertCoin.run(clientId, bit1, bit2, bit3, value);
-			coinIds.push(Number(info.lastInsertId));
+			coinIds.push(Number(info.lastInsertRowid));
 		}
 	})();
 
@@ -252,7 +252,7 @@ function seedTransactions(
 
 			// Get BitSlow value
 			const coinValue =
-				db.query("SELECT value FROM coins WHERE coin_id = ?").get(coinId)
+				(db.query("SELECT value FROM coins WHERE coin_id = ?").get(coinId) as { value?: number })
 					?.value || 0;
 
 			// Use exact BitSlow value as the transaction amount
