@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Transaction } from "../types";
+import type { Transaction } from "../types";
 import { Toast } from "../components/Toast";
 
 const ENDPOINT_URL = "http://localhost:3000/";
@@ -177,7 +177,7 @@ export function TransactionsPage() {
 
 	// Handle page size change
 	const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		const newSize = parseInt(e.target.value);
+		const newSize = Number.parseInt(e.target.value);
 		setPageSize(newSize);
 		setPage(1);
 	};
@@ -230,8 +230,8 @@ export function TransactionsPage() {
 		visiblePages.push(1);
 
 		// Calculate start and end pages to show
-		let startPage = Math.max(2, page - 2);
-		let endPage = Math.min(totalPages - 1, page + 2);
+		const startPage = Math.max(2, page - 2);
+		const endPage = Math.min(totalPages - 1, page + 2);
 
 		if (startPage > 2) {
 			visiblePages.push(-1);
@@ -257,7 +257,7 @@ export function TransactionsPage() {
 	if (loading) {
 		return (
 			<div className="flex flex-col justify-center items-center h-screen bg-gray-50">
-				<div className="w-16 h-16 mb-4 border-t-4 border-b-4 border-blue-500 rounded-full animate-spin"></div>
+				<div className="w-16 h-16 mb-4 border-t-4 border-b-4 border-blue-500 rounded-full animate-spin" />
 				<div className="animate-pulse flex flex-col items-center">
 					<h2 className="text-xl font-semibold text-gray-700 mb-2">
 						Loading Transactions
@@ -269,15 +269,15 @@ export function TransactionsPage() {
 						<div
 							className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
 							style={{ animationDelay: "0ms" }}
-						></div>
+						/>
 						<div
 							className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
 							style={{ animationDelay: "150ms" }}
-						></div>
+						/>
 						<div
 							className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
 							style={{ animationDelay: "300ms" }}
-						></div>
+						/>
 					</div>
 				</div>
 			</div>
@@ -296,71 +296,83 @@ export function TransactionsPage() {
 				<form onSubmit={handleFilterSubmit}>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-1">
+							<div id="date-range-group" className="block text-sm font-medium text-gray-700 mb-1">
 								Date Range
-							</label>
-							<div className="flex space-x-2">
+							</div>
+							<div className="flex space-x-2" role="group" aria-labelledby="date-range-group">
 								<input
 									type="date"
+									id="startDate"
 									name="startDate"
 									value={filterForm.startDate}
 									onChange={handleFilterChange}
 									className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="Start Date"
+									aria-label="Start Date"
 								/>
 								<input
 									type="date"
+									id="endDate"
 									name="endDate"
 									value={filterForm.endDate}
 									onChange={handleFilterChange}
 									className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="End Date"
+									aria-label="End Date"
 								/>
 							</div>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-1">
+							<div id="value-range-group" className="block text-sm font-medium text-gray-700 mb-1">
 								Value Range
-							</label>
-							<div className="flex space-x-2">
+							</div>
+							<div className="flex space-x-2" role="group" aria-labelledby="value-range-group">
 								<input
 									type="number"
+									id="minValue"
 									name="minValue"
 									value={filterForm.minValue}
 									onChange={handleFilterChange}
 									className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="Min Value"
+									aria-label="Minimum Value"
 								/>
 								<input
 									type="number"
+									id="maxValue"
 									name="maxValue"
 									value={filterForm.maxValue}
 									onChange={handleFilterChange}
 									className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="Max Value"
+									aria-label="Maximum Value"
 								/>
 							</div>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-1">
+							<div id="names-group" className="block text-sm font-medium text-gray-700 mb-1">
 								Names
-							</label>
-							<div className="flex space-x-2">
+							</div>
+							<div className="flex space-x-2" role="group" aria-labelledby="names-group">
 								<input
 									type="text"
+									id="buyerName"
 									name="buyerName"
 									value={filterForm.buyerName}
 									onChange={handleFilterChange}
 									className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="Buyer Name"
+									aria-label="Buyer Name"
 								/>
 								<input
 									type="text"
+									id="sellerName"
 									name="sellerName"
 									value={filterForm.sellerName}
 									onChange={handleFilterChange}
 									className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
 									placeholder="Seller Name"
+									aria-label="Seller Name"
 								/>
 							</div>
 						</div>
@@ -410,22 +422,20 @@ export function TransactionsPage() {
 						<button
 							onClick={handlePrevPage}
 							disabled={page <= 1}
-							className={`px-3 py-1 rounded ${
-								page <= 1
-									? "bg-gray-200 text-gray-500 cursor-not-allowed"
-									: "bg-gray-800 text-white hover:bg-gray-700"
-							}`}
+							className={`px-3 py-1 rounded ${page <= 1
+								? "bg-gray-200 text-gray-500 cursor-not-allowed"
+								: "bg-gray-800 text-white hover:bg-gray-700"
+								}`}
 						>
 							Prev
 						</button>
 						<button
 							onClick={handleNextPage}
 							disabled={page >= totalPages}
-							className={`px-3 py-1 rounded ${
-								page >= totalPages
-									? "bg-gray-200 text-gray-500 cursor-not-allowed"
-									: "bg-gray-800 text-white hover:bg-gray-700"
-							}`}
+							className={`px-3 py-1 rounded ${page >= totalPages
+								? "bg-gray-200 text-gray-500 cursor-not-allowed"
+								: "bg-gray-800 text-white hover:bg-gray-700"
+								}`}
 						>
 							Next
 						</button>
@@ -442,10 +452,10 @@ export function TransactionsPage() {
 						filters.maxValue ||
 						filters.buyerName ||
 						filters.sellerName) && (
-						<p className="text-sm text-gray-400 mt-2">
-							Try adjusting your filters
-						</p>
-					)}
+							<p className="text-sm text-gray-400 mt-2">
+								Try adjusting your filters
+							</p>
+						)}
 				</div>
 			) : (
 				<div className="rounded-lg shadow-md">
@@ -559,11 +569,10 @@ export function TransactionsPage() {
 						<button
 							onClick={handlePrevPage}
 							disabled={page <= 1}
-							className={`px-3 py-1 rounded-l-md border ${
-								page <= 1
-									? "bg-gray-100 text-gray-400 cursor-not-allowed"
-									: "bg-white text-gray-700 hover:bg-gray-50"
-							}`}
+							className={`px-3 py-1 rounded-l-md border ${page <= 1
+								? "bg-gray-100 text-gray-400 cursor-not-allowed"
+								: "bg-white text-gray-700 hover:bg-gray-50"
+								}`}
 						>
 							Previous
 						</button>
@@ -580,11 +589,10 @@ export function TransactionsPage() {
 								<button
 									key={pageNum}
 									onClick={() => handlePageChange(pageNum)}
-									className={`px-3 py-1 border-t border-b border-r ${
-										page === pageNum
-											? "bg-blue-500 text-white"
-											: "bg-white text-gray-700 hover:bg-gray-50"
-									}`}
+									className={`px-3 py-1 border-t border-b border-r ${page === pageNum
+										? "bg-blue-500 text-white"
+										: "bg-white text-gray-700 hover:bg-gray-50"
+										}`}
 								>
 									{pageNum}
 								</button>
@@ -594,11 +602,10 @@ export function TransactionsPage() {
 						<button
 							onClick={handleNextPage}
 							disabled={page >= totalPages}
-							className={`px-3 py-1 rounded-r-md border-t border-r border-b ${
-								page >= totalPages
-									? "bg-gray-100 text-gray-400 cursor-not-allowed"
-									: "bg-white text-gray-700 hover:bg-gray-50"
-							}`}
+							className={`px-3 py-1 rounded-r-md border-t border-r border-b ${page >= totalPages
+								? "bg-gray-100 text-gray-400 cursor-not-allowed"
+								: "bg-white text-gray-700 hover:bg-gray-50"
+								}`}
 						>
 							Next
 						</button>

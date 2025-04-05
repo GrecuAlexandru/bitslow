@@ -88,6 +88,7 @@ export function CoinHistoryModal({
 							BitSlow #{coinId} Ownership History
 						</h3>
 						<button
+							type="button"
 							onClick={onClose}
 							className="text-gray-500 hover:text-gray-700"
 						>
@@ -110,7 +111,7 @@ export function CoinHistoryModal({
 
 					{isLoading ? (
 						<div className="flex justify-center my-8">
-							<div className="w-8 h-8 border-t-2 border-blue-500 rounded-full animate-spin"></div>
+							<div className="w-8 h-8 border-t-2 border-blue-500 rounded-full animate-spin" />
 						</div>
 					) : history.length === 0 ? (
 						<div className="text-gray-500 my-4">
@@ -120,11 +121,11 @@ export function CoinHistoryModal({
 						<div className="mt-4">
 							<div className="relative">
 								{/* Timeline line */}
-								<div className="absolute top-0 bottom-0 left-5 w-0.5 bg-gray-200"></div>
+								<div className="absolute top-0 bottom-0 left-5 w-0.5 bg-gray-200" />
 
 								{/* Timeline events */}
 								{history.map((record, index) => (
-									<div key={index} className="relative flex items-start mb-6">
+									<div key={`history-${record.date}-${index}`} className="relative flex items-start mb-6">
 										{/* Timeline dot */}
 										<div
 											className={`absolute left-5.5 w-2.5 h-2.5 mt-1.5 -ml-1.5 rounded-full ${record.type === "generated"
@@ -133,7 +134,7 @@ export function CoinHistoryModal({
 													? "bg-blue-500"
 													: "bg-yellow-500"
 												}`}
-										></div>
+										/>
 
 										{/* Timeline content */}
 										<div className="ml-12">
@@ -193,6 +194,7 @@ export function CoinHistoryModal({
 
 					<div className="mt-6 flex justify-end">
 						<button
+							type="button"
 							onClick={onClose}
 							className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300"
 						>

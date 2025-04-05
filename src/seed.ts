@@ -1,4 +1,4 @@
-import { Database } from "bun:sqlite";
+import type { Database } from "bun:sqlite";
 import { faker } from "@faker-js/faker";
 import { hashPassword } from "./utils/password_hashing";
 
@@ -101,6 +101,7 @@ function initializeSchema(db: Database) {
 	CREATE TABLE IF NOT EXISTS auth_tokens (
 		token TEXT PRIMARY KEY,
 		client_id INTEGER NOT NULL,
+		email TEXT NOT NULL,
 		expires_at TIMESTAMP NOT NULL,
 		FOREIGN KEY (client_id) REFERENCES clients (id)
 	);
@@ -172,7 +173,9 @@ function seedCoins(db: Database, count: number, clientCount: number): number[] {
 					: null;
 
 			// Generate unique bit combinations
-			let bit1: number, bit2: number, bit3: number;
+			let bit1: number;
+			let bit2: number;
+			let bit3: number;
 			let bitCombinationKey: string;
 
 			do {

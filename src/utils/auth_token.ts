@@ -1,5 +1,5 @@
-import { randomBytes } from "crypto";
-import { Database } from "bun:sqlite";
+import { randomBytes } from "node:crypto";
+import type { Database } from "bun:sqlite";
 
 // Token data structure
 interface TokenData {
@@ -112,19 +112,19 @@ export class TokenManager {
 
 	// Initialize with database connection
 	static initialize(db: Database): void {
-		this.storage = new DatabaseTokenStorage(db);
-		this.initialized = true;
+		TokenManager.storage = new DatabaseTokenStorage(db);
+		TokenManager.initialized = true;
 		console.log("TokenManager initialized with database storage");
 	}
 
 	// Set a different storage implementation
 	static setStorage(storage: TokenStorage): void {
-		this.storage = storage;
+		TokenManager.storage = storage;
 	}
 
 	// Generate a secure token for a user
 	static async createToken(userId: number, email: string): Promise<string> {
-		if (!this.initialized) {
+		if (!TokenManager.initialized) {
 			console.warn(
 				"TokenManager not initialized with database. Using in-memory storage.",
 			);
@@ -135,10 +135,10 @@ export class TokenManager {
 		const token = tokenBytes.toString("hex");
 
 		// Store token with user data and expiration
-		await this.storage.set(token, {
+		await TokenManager.storage.set(token, {
 			userId,
 			email,
-			expiresAt: Date.now() + this.EXPIRATION_TIME,
+			expiresAt: Date.now() + TokenManager.EXPIRATION_TIME,
 		});
 
 		return token;
@@ -150,7 +150,7 @@ export class TokenManager {
 			return null;
 		}
 
-		const tokenData = await this.storage.get(token);
+		const tokenData = await TokenManager.storage.get(token);
 
 		if (!tokenData) {
 			return null; // Token not found
@@ -158,7 +158,7 @@ export class TokenManager {
 
 		// Check if token is expired
 		if (Date.now() > tokenData.expiresAt) {
-			await this.storage.delete(token); // Clean up expired token
+			await TokenManager.storage.delete(token); // Clean up expired token
 			return null;
 		}
 
@@ -167,6 +167,6 @@ export class TokenManager {
 
 	// Invalidate a token (for logout)
 	static async removeToken(token: string): Promise<boolean> {
-		return await this.storage.delete(token);
+		return await TokenManager.storage.delete(token);
 	}
 }

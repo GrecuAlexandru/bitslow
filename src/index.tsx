@@ -3,7 +3,7 @@ import { Database } from "bun:sqlite";
 import { seedDatabase } from "./seed";
 import index from "./index.html";
 import { computeBitSlow } from "./bitslow";
-import { Transaction, Coin } from "./types";
+import type { Transaction, Coin } from "./types";
 import { hashPassword } from "./utils/password_hashing";
 import { TokenManager } from "./utils/auth_token";
 
@@ -87,8 +87,8 @@ const server = serve({
 				try {
 					// Get pagination parameters from query string
 					const url = new URL(req.url);
-					const page = parseInt(url.searchParams.get("page") || "1");
-					const pageSize = parseInt(url.searchParams.get("pageSize") || "15");
+					const page = Number.parseInt(url.searchParams.get("page") || "1");
+					const pageSize = Number.parseInt(url.searchParams.get("pageSize") || "15");
 
 					// Get filter parameters
 					const startDate = url.searchParams.get("startDate");
@@ -718,8 +718,8 @@ const server = serve({
 				try {
 					// Get pagination parameters from query string
 					const url = new URL(req.url);
-					const page = parseInt(url.searchParams.get("page") || "1");
-					const pageSize = parseInt(url.searchParams.get("pageSize") || "15");
+					const page = Number.parseInt(url.searchParams.get("page") || "1");
+					const pageSize = Number.parseInt(url.searchParams.get("pageSize") || "15");
 
 					// Generate cache key based on pagination parameters
 					const cacheKey = generateCoinCacheKey(page, pageSize);
@@ -1024,7 +1024,9 @@ const server = serve({
 						// Try to find a unique combination (with a limit to prevent infinite loops)
 						const MAX_ATTEMPTS = 10000;
 						let attempts = 0;
-						let bit1, bit2, bit3;
+						let bit1;
+						let bit2;
+						let bit3;
 						let combinationKey;
 
 						do {
@@ -1122,9 +1124,9 @@ const server = serve({
 					// Get the coin ID from the URL
 					const url = new URL(req.url);
 					const pathParts = url.pathname.split("/");
-					const coinId = parseInt(pathParts[pathParts.length - 2]);
+					const coinId = Number.parseInt(pathParts[pathParts.length - 2]);
 
-					if (isNaN(coinId)) {
+					if (Number.isNaN(coinId)) {
 						return new Response(
 							JSON.stringify({ success: false, message: "Invalid coin ID" }),
 							{ status: 400, headers: { "Content-Type": "application/json" } },
@@ -1200,20 +1202,20 @@ const server = serve({
 						owner_id: coin.client_id,
 						owner_name: coin.client_id
 							? (
-									db
-										.query("SELECT name FROM clients WHERE id = ?")
-										.get(coin.client_id) as any
-								)?.name
+								db
+									.query("SELECT name FROM clients WHERE id = ?")
+									.get(coin.client_id) as any
+							)?.name
 							: null,
 						type: "current",
 						amount: null,
 						previous_owner_id: lastOwnerId,
 						previous_owner_name: lastOwnerId
 							? (
-									db
-										.query("SELECT name FROM clients WHERE id = ?")
-										.get(lastOwnerId) as any
-								)?.name
+								db
+									.query("SELECT name FROM clients WHERE id = ?")
+									.get(lastOwnerId) as any
+							)?.name
 							: null,
 					};
 

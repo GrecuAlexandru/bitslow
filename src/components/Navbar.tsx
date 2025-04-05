@@ -13,11 +13,10 @@ function NavLink({ to, isActive, children, onClick }: NavLinkProps) {
 	return (
 		<Link
 			to={to}
-			className={`px-3 py-2 rounded-md text-sm font-medium ${
-				isActive
+			className={`px-3 py-2 rounded-md text-sm font-medium ${isActive
 					? "bg-blue-700 text-white"
 					: "text-gray-300 hover:bg-gray-700 hover:text-white"
-			}`}
+				}`}
 			onClick={onClick}
 		>
 			{children}
@@ -36,7 +35,7 @@ export function Navbar() {
 		// Check authentication status
 		setAuthenticated(isLoggedIn());
 		setUsername(getUserName());
-	}, [currentPath]); // Re-check when path changes
+	}, []); // No need for dependencies, only runs on mount
 
 	const handleLogout = async () => {
 		await logoutUser();
@@ -127,6 +126,7 @@ export function Navbar() {
 					{/* Mobile menu button */}
 					<div className="md:hidden">
 						<button
+							type="button"
 							onClick={() => setIsMenuOpen(!isMenuOpen)}
 							className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
 						>
@@ -180,22 +180,20 @@ export function Navbar() {
 							<>
 								<Link
 									to="/"
-									className={`block px-3 py-2 rounded-md text-base font-medium ${
-										currentPath === "/" || currentPath === ""
+									className={`block px-3 py-2 rounded-md text-base font-medium ${currentPath === "/" || currentPath === ""
 											? "bg-blue-700 text-white"
 											: "text-gray-300 hover:bg-gray-700 hover:text-white"
-									}`}
+										}`}
 									onClick={() => setIsMenuOpen(false)}
 								>
 									Dashboard
 								</Link>
 								<Link
 									to="/transactions"
-									className={`block px-3 py-2 rounded-md text-base font-medium ${
-										currentPath === "/transactions"
+									className={`block px-3 py-2 rounded-md text-base font-medium ${currentPath === "/transactions"
 											? "bg-blue-700 text-white"
 											: "text-gray-300 hover:bg-gray-700 hover:text-white"
-									}`}
+										}`}
 									onClick={() => setIsMenuOpen(false)}
 								>
 									Transactions
@@ -204,11 +202,10 @@ export function Navbar() {
 						) : (
 							<Link
 								to="/"
-								className={`block px-3 py-2 rounded-md text-base font-medium ${
-									currentPath === "/" || currentPath === ""
+								className={`block px-3 py-2 rounded-md text-base font-medium ${currentPath === "/" || currentPath === ""
 										? "bg-blue-700 text-white"
 										: "text-gray-300 hover:bg-gray-700 hover:text-white"
-								}`}
+									}`}
 								onClick={() => setIsMenuOpen(false)}
 							>
 								Transactions
@@ -216,11 +213,10 @@ export function Navbar() {
 						)}
 						<Link
 							to="/marketplace"
-							className={`block px-3 py-2 rounded-md text-base font-medium ${
-								currentPath === "/marketplace"
+							className={`block px-3 py-2 rounded-md text-base font-medium ${currentPath === "/marketplace"
 									? "bg-blue-700 text-white"
 									: "text-gray-300 hover:bg-gray-700 hover:text-white"
-							}`}
+								}`}
 							onClick={() => setIsMenuOpen(false)}
 						>
 							Marketplace
@@ -244,22 +240,20 @@ export function Navbar() {
 							<>
 								<Link
 									to="/register"
-									className={`block px-3 py-2 rounded-md text-base font-medium ${
-										currentPath === "/register"
+									className={`block px-3 py-2 rounded-md text-base font-medium ${currentPath === "/register"
 											? "bg-blue-700 text-white"
 											: "text-gray-300 hover:bg-gray-700 hover:text-white"
-									}`}
+										}`}
 									onClick={() => setIsMenuOpen(false)}
 								>
 									Register
 								</Link>
 								<Link
 									to="/login"
-									className={`block px-3 py-2 rounded-md text-base font-medium ${
-										currentPath === "/login"
+									className={`block px-3 py-2 rounded-md text-base font-medium ${currentPath === "/login"
 											? "bg-blue-700 text-white"
 											: "text-gray-300 hover:bg-gray-700 hover:text-white"
-									}`}
+										}`}
 									onClick={() => setIsMenuOpen(false)}
 								>
 									Login
