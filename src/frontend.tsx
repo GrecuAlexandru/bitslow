@@ -9,7 +9,14 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 
 function start() {
-	const root = createRoot(document.getElementById("root")!);
+	const rootElement = document.getElementById("root");
+
+	if (!rootElement) {
+		console.error("Failed to find the root element");
+		return;
+	}
+
+	const root = createRoot(rootElement);
 	root.render(<App />);
 }
 

@@ -14,10 +14,18 @@
 	},
 	"dependencies": {
 		"@faker-js/faker": "^8.4.1",
+		"@radix-ui/react-label": "^2.1.2",
+		"@radix-ui/react-slot": "^1.1.2",
 		"bun-plugin-tailwind": "^0.0.14",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"lucide-react": "^0.486.0",
 		"react": "^19",
 		"react-dom": "^19",
-		"tailwindcss": "^4.0.6"
+		"react-router-dom": "^7.4.1",
+		"tailwind-merge": "^3.1.0",
+		"tailwindcss": "^4.1.0",
+		"tw-animate-css": "^1.2.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

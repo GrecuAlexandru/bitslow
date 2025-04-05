@@ -1,5 +1,6 @@
 import { Database } from "bun:sqlite";
 import { faker } from "@faker-js/faker";
+import { hashPassword } from "./utils/password_hashing";
 
 /**
  * Initialize database schema and seed with random data
@@ -67,6 +68,7 @@ function initializeSchema(db: Database) {
       email TEXT UNIQUE NOT NULL,
       phone TEXT,
       address TEXT,
+	  password_hash TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -94,6 +96,14 @@ function initializeSchema(db: Database) {
       FOREIGN KEY (seller_id) REFERENCES clients (id),
       FOREIGN KEY (buyer_id) REFERENCES clients (id)
     );
+
+	-- Create authentication tokens table
+	CREATE TABLE IF NOT EXISTS auth_tokens (
+		token TEXT PRIMARY KEY,
+		client_id INTEGER NOT NULL,
+		expires_at TIMESTAMP NOT NULL,
+		FOREIGN KEY (client_id) REFERENCES clients (id)
+	);
   `);
 }
 
@@ -105,8 +115,8 @@ function seedClients(db: Database, count: number): number[] {
 
 	const clientIds: number[] = [];
 	const insertClient = db.prepare(`
-    INSERT INTO clients (name, email, phone, address) 
-    VALUES (?, ?, ?, ?)
+    INSERT INTO clients (name, email, phone, address, password_hash)
+    VALUES (?, ?, ?, ?, ?)
   `);
 
 	db.transaction(() => {
@@ -119,7 +129,15 @@ function seedClients(db: Database, count: number): number[] {
 			const phone = faker.phone.number();
 			const address = faker.location.streetAddress({ useFullAddress: true });
 
-			const info = insertClient.run(name, email, phone, address);
+			const password = faker.internet.password();
+			const passwordHash = hashPassword(password);
+
+			// Log the generated credentials for testing
+			console.log(
+				`Generated client: ${name}, Email: ${email}, Password: ${password}`,
+			);
+
+			const info = insertClient.run(name, email, phone, address, passwordHash);
 			clientIds.push(Number(info.lastInsertRowid));
 		}
 	})();
@@ -225,7 +243,7 @@ function seedTransactions(
 	console.log(`💸 Generating ${count} random transactions...`);
 
 	const insertTransaction = db.prepare(`
-    INSERT INTO transactions (coin_id, seller_id, buyer_id, amount, transaction_date) 
+    INSERT INTO transactions (coin_id, seller_id, buyer_id, amount, transaction_date)
     VALUES (?, ?, ?, ?, ?)
   `);
 
@@ -252,8 +270,11 @@ function seedTransactions(
 
 			// Get BitSlow value
 			const coinValue =
-				(db.query("SELECT value FROM coins WHERE coin_id = ?").get(coinId) as { value?: number })
-					?.value || 0;
+				(
+					db.query("SELECT value FROM coins WHERE coin_id = ?").get(coinId) as {
+						value?: number;
+					}
+				)?.value || 0;
 
 			// Use exact BitSlow value as the transaction amount
 			const amount = coinValue;
